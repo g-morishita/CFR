@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 
+def _check_list_like(input_array):
+    if not isinstance(input_array, (list, tuple, np.ndarray, pd.DataFrame, pd.Series)):
+        raise TypeError(f"input's type should be list, tuple, numpy.ndarray, pd.DataFrame, or pd.Series. Your input: {type(input_array)}")
 class OneShotGame:
     """
     This class represents matrix games. 
@@ -11,8 +14,7 @@ class OneShotGame:
         """
         game_matrix has to be a list-like object.
         """
-        if not isinstance(game_matrix, (list, tuple, np.ndarray, pd.DataFrame, pd.Series)):
-            TypeError(f"game_matrix's type should be list, tuple, numpy.ndarray, pd.DataFrame, or pd.Series. Your input: {type(game_matrix)}")
+        _check_list_like(game_matrix)
         self.game_matrix = np.array(game_matrix)
 
         # num_strategies is a np.ndarray. Its (i-1)th element is the number of strategies for player i.
