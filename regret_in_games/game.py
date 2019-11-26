@@ -33,8 +33,8 @@ class OneShotGame:
         if mixed_strategies.shape[0] > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
 
-        pure_strategies = [_get_strategy(mix_strategy) for mix_strategy in mixed_strategies]
-        return _play_pure_strategy
+        pure_strategies = [self._get_strategy(mix_strategy) for mix_strategy in mixed_strategies]
+        return self._play_pure_strategy(pure_strategies)
 
 
     def _play_pure_strategy(self, pure_strategies):
@@ -64,7 +64,7 @@ class OneShotGame:
         if player > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {player}")
         if self.num_strategies[player - 1] != mixed_strategy.shape[0]:
-            raise NotMatchNumStrategiesError(f"The given number of strategies is {pure_strategies.shape[0]}, but the required one is {self.num_strategies}.")
+            raise NotMatchNumStrategiesError(f"The given number of strategies is {mixed_strategy.shape[0]}, but the required one is {self.num_strategies}.")
         
         # choose an action according to the given mixed stratgy
         chose_action = np.searchsorted(mixed_strategy.cumsum(), np.random.uniform())
