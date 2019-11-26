@@ -73,7 +73,7 @@ class OneShotGame:
 
 def NotMatchNumStrategiesError(Exception):
     """
-    Raised when you tried to play, the required number of strategies is not equal to that of strategies you gave. 
+    Raise when you tried to play, the required number of strategies is not equal to that of strategies you gave. 
     """
     def __init__(self, message):
         self.message = message
@@ -81,7 +81,7 @@ def NotMatchNumStrategiesError(Exception):
 
 def ExceedActionSpaceError(Exception):
     """
-    Raised when you tried to specify a certain action, but the number exceeds the possible number of actions.
+    Raise when you tried to specify a certain action, but the number exceeds the possible number of actions.
     """
     def __init__(self, message):
         self.message = message
@@ -97,7 +97,7 @@ def NotDistError(Exception):
 
 def ExceedNumPlayersError(Exception):
     """
-    Raised when you manipulate player which exceeds the number of players in a given matrix game
+    Raise when you manipulate player which exceeds the number of players in a given matrix game
     """
     def __init__(self, message):
         self.message = message
