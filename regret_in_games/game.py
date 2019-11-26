@@ -34,7 +34,7 @@ class OneShotGame:
         if mixed_strategies.shape[0] > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
 
-        pure_strategies = [self._get_strategy(mix_strategy) for mix_strategy in mixed_strategies]
+        pure_strategies = [self._get_strategy(player, mix_strategy) for player, mix_strategy in enumerate(mixed_strategies)]
         return self._play_pure_strategy(pure_strategies)
 
 
@@ -45,13 +45,14 @@ class OneShotGame:
         _check_list_like(pure_strategies)
         pure_strategies = np.array(pure_strategies)
 
-        if pure_strategies.shape[0] != self.num_strategies:
+        if pure_strategies.shape[0] != self.num_strategies.shape[0]:
             raise NotMatchNumStrategiesError(f"The given number of strategies is {pure_strategies.shape[0]}, but the required one is {self.num_strategies}.")
 
         # check if the specified action does not exceed the number of actions in the given matrix game.
         if (self.num_strategies <= pure_strategies).any():
             raise ExceedActionSpaceError(f"The action you specified exceeds the number of actions in the given matrix game.{pure_strategies[(self.num_strategies <= pure_strategies)]}")
-        return self.game_matrix[pure_strategies]
+        # tuple() is required.　https://stackoverflow.com/questions/5508352/indexing-numpy-array-with-another-numpy-array
+        return self.game_matrix[tuple(pure_strategies)]
 
 
     def _get_strategy(self, player, mixed_strategy):
