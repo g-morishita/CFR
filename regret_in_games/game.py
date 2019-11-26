@@ -52,6 +52,7 @@ class OneShotGame:
             raise ExceedActionSpaceError(f"The action you specified exceeds the number of actions in the given matrix game.{pure_strategies[(self.num_strategies <= pure_strategies)]}")
         return self.game_matrix[pure_strategies]
 
+
     def _get_strategy(self, player, mixed_strategy):
         """
         According to mixed_strategy of player, you can get one strategy drawn from the mixed strategy's distribution.
@@ -62,6 +63,8 @@ class OneShotGame:
             raise NotDistError(f"Your mixed strategy is not a probability distribution because its sum is not 1, but {np.sum(mixed_strategy)}")
         if player > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {player}")
+        if self.num_strategies[player - 1] != mixed_strategy.shape[0]:
+            raise NotMatchNumStrategiesError(f"The given number of strategies is {pure_strategies.shape[0]}, but the required one is {self.num_strategies}.")
         
         # choose an action according to the given mixed stratgy
         chose_action = np.searchsorted(mixed_strategy.cumsum(), np.random.uniform())
