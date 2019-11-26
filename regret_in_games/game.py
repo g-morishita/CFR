@@ -71,7 +71,7 @@ class OneShotGame:
         return chose_action
 
 
-def NotMatchNumStrategiesError(Exception):
+class NotMatchNumStrategiesError(Exception):
     """
     Raise when you tried to play, the required number of strategies is not equal to that of strategies you gave. 
     """
@@ -79,7 +79,7 @@ def NotMatchNumStrategiesError(Exception):
         self.message = message
 
 
-def ExceedActionSpaceError(Exception):
+class ExceedActionSpaceError(Exception):
     """
     Raise when you tried to specify a certain action, but the number exceeds the possible number of actions.
     """
@@ -87,7 +87,7 @@ def ExceedActionSpaceError(Exception):
         self.message = message
 
 
-def NotDistError(Exception):
+class NotDistError(Exception):
     """
     Raise when the sum of your probability distribution is not 1.
     """
@@ -95,7 +95,7 @@ def NotDistError(Exception):
         self.message = message
 
 
-def ExceedNumPlayersError(Exception):
+class ExceedNumPlayersError(Exception):
     """
     Raise when you manipulate player which exceeds the number of players in a given matrix game
     """
