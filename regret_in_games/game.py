@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math
 
 def _check_list_like(input_array):
     if not isinstance(input_array, (list, tuple, np.ndarray, pd.DataFrame, pd.Series)):
