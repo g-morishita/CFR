@@ -4,6 +4,7 @@ import pandas as pd
 def _check_list_like(input_array):
     if not isinstance(input_array, (list, tuple, np.ndarray, pd.DataFrame, pd.Series)):
         raise TypeError(f"input's type should be list, tuple, numpy.ndarray, pd.DataFrame, or pd.Series. Your input: {type(input_array)}")
+
 class OneShotGame:
     """
     This class represents matrix games. 
