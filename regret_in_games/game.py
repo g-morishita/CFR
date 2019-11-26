@@ -28,6 +28,13 @@ class OneShotGame:
         The game is actually played and each player gets their utility.
         Note that the game is actually played, so the utility is not the expected one.
         """
+        _check_list_like(mixed_strategies)
+        mixed_strategies = np.array(mixed_strategies)
+        if mixed_strategies.shape[0] > self.num_players:
+            raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
+
+        pure_strategies = [_get_strategy(mix_strategy) for mix_strategy in mixed_strategies]
+        return _play_pure_strategy
 
 
     def _play_pure_strategy(self, pure_strategies):
