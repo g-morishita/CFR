@@ -16,3 +16,10 @@ class Player():
         self.player = player
         self.num_actions = self.normal_game.num_strategies[self.player]
         self.regret_sum = np.zero(self.num_actions)
+
+
+    def simulate_game(self, other_players):
+        """
+        simulate the game and return the regret in the simulated game
+        :return: regret (np.ndarray)
+        """
