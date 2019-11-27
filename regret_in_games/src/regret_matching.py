@@ -1,5 +1,6 @@
 import numpy as np
 import normal_game
+import helper_func
 
 class Player():
     """
@@ -27,9 +28,9 @@ class Player():
         self.regret_sum = np.zeros(self.num_actions)
 
 
-    def init_game(self, game_matrix):
+    def init_game(cls, game_matrix):
         """initiate the normal game"""
-        self.game.initialize_game(game_matrix)
+        cls.game.initialize_game(game_matrix)
 
 
     def simulate_game(self, other_players):
@@ -43,17 +44,17 @@ class Player():
         other_players = list(other_players)
         all_players = other_players + [self]
         all_players.sort(key=lambda player: player.player)
-        mixed_strategies = [player.match_regret() for player in all_players]
+        mixed_strategies = [player.regret_to_strategy() for player in all_players]
         gained_utilities, played_pure_strategies = self.game.play_prob(mixed_strategies)
         return gained_utilities, played_pure_strategies
 
 
-    def match_regret(self):
+    def regret_to_strategy(self):
         """
         transform the cumulative regret to a mixed strategy
         :return: mixed strategy (np.ndarray)
         """
-        # if the cumulative regret is 0, which means that the player hasn't played once, his/her mixed strategy is uniformly random.
+        # if the cumulative regret is 0, his/her mixed strategy is uniformly random.
         # Note that the initial mixed strategy does not need to be uniformly random.
         if (self.regret_sum == 0).all():
             mixed_strategy = np.tile(1.0 / self.num_actions, self.num_actions)
