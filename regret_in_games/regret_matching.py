@@ -13,4 +13,6 @@ class Player():
             raise game.ExceedNumPlayersError(f"Your input player exceeds the number of players in the given game. The limit is {normal_game.num_players}, but your input is {player}")
 
         self.normal_game = normal_game
-        self.regret_sum = np.zero(self.normal_game.num_strategies[player])
+        self.player = player
+        self.num_actions = self.normal_game.num_strategies[self.player]
+        self.regret_sum = np.zero(self.num_actions)
