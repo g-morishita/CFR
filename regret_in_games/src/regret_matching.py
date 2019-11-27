@@ -6,9 +6,21 @@ class Player():
     Player class that has a normal game info.
     """
     # the game the player play
-    game = normal_game.OneShotaGame()
+    game = normal_game.OneShotGame()
 
-    def __init__(self, player):
+    def __init__(self, player, game = None):
+        # If a game to play is set, initialize.
+        if game is not None:
+            self.init_game(game)
+            self.initilize_player(player)
+        else:
+            self.player = player
+            self.num_actions = 0
+            self.regret_sum = None
+
+
+
+    def initilize_player(self, player):
         if player > self.game.num_players:
             raise normal_game.ExceedNumPlayersError(f"Your input player exceeds the number of players in the given game. "
                                                     f"The limit is {self.game.num_players}, but your input is {player}")
@@ -21,6 +33,7 @@ class Player():
     def init_game(self, game_matrix):
         """initiate the normal game"""
         self.game.initilize_game(game_matrix)
+        self.initilize_player(self.player)
 
 
     def simulate_game(self, other_players):
@@ -30,7 +43,9 @@ class Player():
         """
         # check if other players are actually players
         if not np.array([isinstance(player, self) for player in other_players]).all():
-            raise NotPlayerError("The inputs are inavlid. The acceptable type is only Player!")
+            raise NotPlayerError("The inputs are inavlid. The acceptable type is only Player.")
+
+
 
 
     def match_regret(self):
