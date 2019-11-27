@@ -1,10 +1,7 @@
 import numpy as np
-import pandas as pd
 import math
+import helper_func
 
-def _check_list_like(input_array):
-    if not isinstance(input_array, (list, tuple, np.ndarray, pd.DataFrame, pd.Series)):
-        raise TypeError(f"input's type should be list, tuple, numpy.ndarray, pd.DataFrame, or pd.Series. Your input: {type(input_array)}")
 
 class OneShotGame:
     """
@@ -23,7 +20,7 @@ class OneShotGame:
 
 
     def initialize_game(self, game_matrix):
-        _check_list_like(game_matrix)
+        helper_func.check_list_like(game_matrix)
         self.game_matrix = np.array(game_matrix)
 
         # num_strategies is a np.ndarray. Its (i-1)th element is the number of strategies for player i.
@@ -43,20 +40,20 @@ class OneShotGame:
         Note that the game is actually played, so the utility is not the expected one.
         """
         self._check_valid_game()
-        _check_list_like(mixed_strategies)
+        helper_func.check_list_like(mixed_strategies)
         mixed_strategies = np.array(mixed_strategies)
         if mixed_strategies.shape[0] > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
 
         played_pure_strategies = [self._get_strategy(player, mix_strategy) for player, mix_strategy in enumerate(mixed_strategies)]
-        return self._play_pure_strategy(played_pure_strategies), played_pure_strategies
+        return self.play_pure_strategy(played_pure_strategies), played_pure_strategies
 
 
-    def _play_pure_strategy(self, pure_strategies):
+    def play_pure_strategy(self, pure_strategies):
         """
         play the game within the pure strategies and return the utilites
         """
-        _check_list_like(pure_strategies)
+        helper_func.check_list_like(pure_strategies)
         pure_strategies = np.array(pure_strategies)
 
         if pure_strategies.shape[0] != self.num_strategies.shape[0]:
@@ -73,7 +70,7 @@ class OneShotGame:
         """
         According to mixed_strategy of player, you can get one strategy drawn from the mixed strategy's distribution.
         """
-        _check_list_like(mixed_strategy)
+        helper_func.check_list_like(mixed_strategy)
         mixed_strategy = np.array(mixed_strategy)
         if not math.isclose(np.sum(mixed_strategy), 1.0):
             raise NotDistError(f"Your mixed strategy is not a probability distribution because its sum is not 1, but {np.sum(mixed_strategy)}")
