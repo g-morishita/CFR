@@ -12,10 +12,17 @@ class OneShotGame:
     This is applicable to n by n matrix game, but be careful for the order of utilities.
     For now, it's safe to use this for two by two matrix games.
     """
-    def __init__(self, game_matrix):
+    def __init__(self, game_matrix=None):
         """
         game_matrix has to be a list-like object.
         """
+        if game_matrix is not None:
+            self.initialize_game(game_matrix)
+        else:
+            self.game_matrix = None
+
+
+    def initialize_game(self, game_matrix):
         _check_list_like(game_matrix)
         self.game_matrix = np.array(game_matrix)
 
@@ -23,12 +30,19 @@ class OneShotGame:
         self.num_strategies = np.array(self.game_matrix.shape)[:-1]
         self.num_players = len(self.num_strategies)
 
+
+    def _check_valid_game(self):
+        if self.game_matrix is None:
+            raise NotSetGameError("The game is not set.")
+
+
     def play_prob(self, mixed_strategies):
         """
         Play the game with mixed strategies.
         The game is actually played and each player gets their utility.
         Note that the game is actually played, so the utility is not the expected one.
         """
+        self._check_valid_game()
         _check_list_like(mixed_strategies)
         mixed_strategies = np.array(mixed_strategies)
         if mixed_strategies.shape[0] > self.num_players:
@@ -103,3 +117,11 @@ class ExceedNumPlayersError(Exception):
     """
     def __init__(self, message):
         self.message = message
+
+
+class NotSetGameError(Exception):
+    """
+    raise when the game is None, that is, the game is not set.
+    """
+    def __init__(self):
+        self.message = "The game is not set!"
