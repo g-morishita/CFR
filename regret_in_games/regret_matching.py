@@ -23,3 +23,17 @@ class Player():
         simulate the game and return the regret in the simulated game
         :return: regret (np.ndarray)
         """
+
+
+    def match_regret(self):
+        """
+        transform the cumulative regret to a mixed strategy
+        :return: mixed strategy (np.ndarray)
+        """
+        # if the cumulative regret is 0, which means that the player hasn't played once, his/her mixed strategy is uniformly random.
+        # Note that the initial mixed strategy does not need to be uniformly random.
+        if (self.regret_sum == 0).all():
+            mixed_strategy = np.tile(1.0 / self.num_actions, self.num_actions)
+        else:
+            mixed_strategy = self.regret_sum / self.regret_sum.sum()
+        return mixed_strategy
