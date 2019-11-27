@@ -62,6 +62,26 @@ class Player():
             mixed_strategy = self.regret_sum / self.regret_sum.sum()
         return mixed_strategy
 
+
+    def _calc_regrets(self, played_pure_strategies):
+        regrets = []
+        add_regret = regrets.append
+        helper_func.check_list_like(played_pure_strategies)
+        base_utility = self.game.play_pure_strategy(played_pure_strategies)[self.player]
+        for action in range(self.num_actions):
+            played_pure_strategies[self.player] = action
+            regret = self.game.play_pure_strategy(played_pure_strategies)[self.player] - base_utility
+            add_regret(regret)
+
+        return np.array(regrets)
+
+
+    def update_cum_regret(self, played_pure_strategies):
+        regrets = self._calc_regrets(played_pure_strategies)
+        regrets[regrets < 0] = 0
+        self.regret_sum += regrets
+
+
 class NotPlayerError(Exception):
     def __init__(self, message):
         self.message = message
