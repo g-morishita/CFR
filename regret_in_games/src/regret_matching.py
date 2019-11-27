@@ -8,16 +8,13 @@ class Player():
     # the game the player play
     game = normal_game.OneShotGame()
 
-    def __init__(self, player, game = None):
-        # If a game to play is set, initialize.
-        if game is not None:
-            self.init_game(game)
+    def __init__(self, player):
+        if self.game is not None:
             self.initilize_player(player)
         else:
             self.player = player
             self.num_actions = 0
             self.regret_sum = None
-
 
 
     def initilize_player(self, player):
@@ -27,13 +24,12 @@ class Player():
 
         self.player = player
         self.num_actions = self.game.num_strategies[self.player]
-        self.regret_sum = np.zero(self.num_actions)
+        self.regret_sum = np.zeros(self.num_actions)
 
 
     def init_game(self, game_matrix):
         """initiate the normal game"""
-        self.game.initilize_game(game_matrix)
-        self.initilize_player(self.player)
+        self.game.initialize_game(game_matrix)
 
 
     def simulate_game(self, other_players):
@@ -42,10 +38,14 @@ class Player():
         :return: regret (np.ndarray)
         """
         # check if other players are actually players
-        if not np.array([isinstance(player, self) for player in other_players]).all():
+        if not np.array([isinstance(player, Player) for player in other_players]).all():
             raise NotPlayerError("The inputs are inavlid. The acceptable type is only Player.")
-
-
+        other_players = list(other_players)
+        all_players = other_players + [self]
+        all_players.sort(key=lambda player: player.player)
+        mixed_strategies = [player.match_regret() for player in all_players]
+        gained_utilities, played_pure_strategies = self.game.play_prob(mixed_strategies)
+        return gained_utilities, played_pure_strategies
 
 
     def match_regret(self):

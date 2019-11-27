@@ -48,8 +48,8 @@ class OneShotGame:
         if mixed_strategies.shape[0] > self.num_players:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
 
-        pure_strategies = [self._get_strategy(player, mix_strategy) for player, mix_strategy in enumerate(mixed_strategies)]
-        return self._play_pure_strategy(pure_strategies)
+        played_pure_strategies = [self._get_strategy(player, mix_strategy) for player, mix_strategy in enumerate(mixed_strategies)]
+        return self._play_pure_strategy(played_pure_strategies), played_pure_strategies
 
 
     def _play_pure_strategy(self, pure_strategies):
