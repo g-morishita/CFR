@@ -2,6 +2,9 @@ import numpy as np
 import game
 
 class Player():
+    """
+    Player class that has a normal game info.
+    """
     def __init__(self, normal_game, player):
         if isinstance(normal_game, (game.OneshotGame)):
             raise TypeError(f"OneShotGame is only acceptable. YOur input's type is {type(normal_game)}")

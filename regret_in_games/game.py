@@ -22,7 +22,7 @@ class OneShotGame:
         # num_strategies is a np.ndarray. Its (i-1)th element is the number of strategies for player i.
         self.num_strategies = np.array(self.game_matrix.shape)[:-1]
         self.num_players = len(self.num_strategies)
-    
+
     def play_prob(self, mixed_strategies):
         """
         Play the game with mixed strategies.
