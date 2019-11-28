@@ -77,18 +77,34 @@ class OneShotGame:
         self.num_players = len(self.num_strategies)
         return self
 
-
     def _check_valid_game(self):
+        """Check the game is set or not. If not, raise `NotSetGameError`."""
         if self.game_matrix is None:
             raise NotSetGameError("The game is not set.")
 
-
     def play_prob(self, mixed_strategies):
         """
-        Play the game with mixed strategies.
-        The game is actually played and each player gets their utility.
-        Note that the game is actually played, so the utility is not the expected one.
+        Play the game with given mixed strategies.
+
+        Parameters
+        ----------
+        mixed_strategies : numpy.ndarray
+            The mixed strategies of all players.
+            For example, two players 1 and 2 play Rock-Paper-Scissors game.
+            Player 1 has a mixed strategy (1/3, 1/2, 1/6).
+            Player 2 has a mixed strategy (1/2, 1/2, 0).
+            Then, you should give a parameter np.array([[1/3, 1/2, 1/6], [1/2, 1/2, 0]]).
+
+        Returns
+        -------
+        resultant_utilities : np.ndarray
+            The utilities that each player gains after the game `self.game_matrix`.
+            Note that the game is actually played, so these utilities are not expected utilites of the strategies.
+
+        played_pure_strategies : np.ndarray
+            The actions that each player actually played.
         """
+
         self._check_valid_game()
         helper_func.check_list_like(mixed_strategies)
         mixed_strategies = np.array(mixed_strategies)
@@ -96,13 +112,25 @@ class OneShotGame:
             raise ExceedNumPlayersError(f"Your input exceeds the number of players in the given matrix game. Expected: {self.num_players}. Yours: {mixed_strategies.shape[0]}")
 
         played_pure_strategies = [self._get_strategy(player, mix_strategy) for player, mix_strategy in enumerate(mixed_strategies)]
-        return self.play_pure_strategy(played_pure_strategies), played_pure_strategies
+        resultant_utilities = self.play_pure_strategy(played_pure_strategies)
+        return resultant_utilities, played_pure_strategies
 
 
     def play_pure_strategy(self, pure_strategies):
         """
-        play the game within the pure strategies and return the utilites
+        Play the game with given pure strategies.
+
+        Parameters
+        ----------
+        pure_strategies : np.ndarray
+            The pure strategies that players play in the game.
+
+        Returns
+        -------
+        resultant_utilities : int | float
+            The utilities that each player gains after the game `self.game_matrix`.
         """
+
         helper_func.check_list_like(pure_strategies)
         pure_strategies = np.array(pure_strategies)
 
@@ -113,13 +141,15 @@ class OneShotGame:
         if (self.num_strategies <= pure_strategies).any():
             raise ExceedActionSpaceError(f"The action you specified exceeds the number of actions in the given matrix game.{pure_strategies[(self.num_strategies <= pure_strategies)]}")
         # tuple() is required.　https://stackoverflow.com/questions/5508352/indexing-numpy-array-with-another-numpy-array
-        return self.game_matrix[tuple(pure_strategies)]
+        resultant_utilities = self.game_matrix[tuple(pure_strategies)]
+        return resultant_utilities
 
 
     def _get_strategy(self, player, mixed_strategy):
         """
-        According to mixed_strategy of player, you can get one strategy drawn from the mixed strategy's distribution.
+        Get an action drawn from the mixed strategy's distribution.
         """
+
         helper_func.check_list_like(mixed_strategy)
         mixed_strategy = np.array(mixed_strategy)
         if not math.isclose(np.sum(mixed_strategy), 1.0):
@@ -132,7 +162,6 @@ class OneShotGame:
         # choose an action according to the given mixed stratgy
         chose_action = np.searchsorted(mixed_strategy.cumsum(), np.random.uniform())
         return chose_action
-
 
 class NotMatchNumStrategiesError(Exception):
     """
