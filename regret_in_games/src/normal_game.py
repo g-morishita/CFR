@@ -6,8 +6,8 @@ import helper_func
 class OneShotGame:
     """
     This class represents matrix games. 
-    This is applicable to n by n matrix game, but be careful for the order of utilities.
-    For now, it's safe to use this for two by two matrix games.
+    This is applicable to n-player game, but be careful for the order of utilities.
+    For now, it's safe to use this for two player games.
     """
     def __init__(self, game_matrix=None):
         """
