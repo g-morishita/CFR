@@ -48,7 +48,7 @@ class Player():
         self.cum_regrets = np.zeros(self.num_actions)
         if strategy is None:
             self.strategy = 1.0 / self.num_actions
-        else
+        else:
             self.strategy = strategy
 
     def init_game(cls, game_matrix):
