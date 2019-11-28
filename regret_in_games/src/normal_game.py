@@ -5,13 +5,55 @@ import helper_func
 
 class OneShotGame:
     """
-    This class represents matrix games. 
-    This is applicable to n-player game, but be careful for the order of utilities.
-    For now, it's safe to use this for two player games.
+    Class to keep the information on the normal-form game.
+
+    Parameters
+    ----------
+    game_matrix : list-like
+        The matrix that represents the normal-form game.
+
+    Attributes
+    ----------
+    game_matrix : numpy.ndarray
+        The matrix that represents the normal-form game.
+    num_strategies : int
+        The number of strategies that each player has.
+    num_players : int
+        The number of players in the game.
+
+    Examples
+    ----------
+    >>> import numpy as np
+    >>> rsp_game_matrix = np.array([
+    ...    [[0, 0], [-1, 1], [1, -1]],
+    ...    [[1, -1], [0, 0], [-1, 1]],
+    ...    [[-1, 1], [1, -1], [0, 0]]
+    ...])
+    >>> rsp = OneShotGame(rsp_game_matrix)
+    >>> rsp.game_matrix
+    array([[[ 0,  0],
+        [-1,  1],
+        [ 1, -1]],
+
+       [[ 1, -1],
+        [ 0,  0],
+        [-1,  1]],
+
+       [[-1,  1],
+        [ 1, -1],
+        [ 0,  0]]])
+    >>> rsp.num_players
+    2
+    >>> rsp.num_strategies
+    array([3, 3])
     """
+
     def __init__(self, game_matrix=None):
         """
-        game_matrix has to be a list-like object.
+
+        Parameters
+        ----------
+        game_matrix
         """
         if game_matrix is not None:
             self.initialize_game(game_matrix)
