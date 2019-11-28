@@ -20,7 +20,7 @@ class Player():
         The player in the game.
     num_actions : int
         The number of actions the player has.
-    regret_sum : np.ndarray
+    cum_regrets : np.ndarray
         The cumulative regret.
     """
 
@@ -33,7 +33,7 @@ class Player():
         else:
             self.player = player
             self.num_actions = 0
-            self.regret_sum = None
+            self.cum_regrets = None
 
     def initilize_player(self, player):
         if player > self.game.num_players:
@@ -42,7 +42,7 @@ class Player():
 
         self.player = player
         self.num_actions = self.game.num_strategies[self.player]
-        self.regret_sum = np.zeros(self.num_actions)
+        self.cum_regrets = np.zeros(self.num_actions)
 
     def init_game(cls, game_matrix):
         """initiate the normal game"""
@@ -78,7 +78,7 @@ class Player():
     def regret_to_strategy(self):
         """
         Transform the cumulative regret into the mixed strategy.
-        If the cumulative regret is all 0, the mixed strategy is uniformly random.
+        If the cumulative regret is non-positive, the mixed strategy is uniformly random.
 
         Returns
         -------
@@ -86,12 +86,13 @@ class Player():
             The mixed strategy.
         """
 
-        # if the cumulative regret is 0, his/her mixed strategy is uniformly random.
+        # If the cumulative regret is 0, his/her mixed strategy is uniformly random.
         # Note that the initial mixed strategy does not need to be uniformly random.
-        if (self.regret_sum == 0).all():
+        if (self.cum_regrets.sum() <= 0):
             mixed_strategy = np.tile(1.0 / self.num_actions, self.num_actions)
         else:
-            mixed_strategy = self.regret_sum / self.regret_sum.sum()
+            self.cum_regrets[self.cum_regrets < 0] = 0
+            mixed_strategy = self.cum_regrets / self.cum_regrets.sum()
         return mixed_strategy
 
     def _calc_regrets(self, played_actions):
@@ -110,8 +111,8 @@ class Player():
     def update_cum_regret(self, played_pure_strategies):
         """Update the cumulative regret. If regret is negative, it is reduced to 0."""
         regrets = self._calc_regrets(played_pure_strategies)
-        regrets[regrets < 0] = 0
-        self.regret_sum += regrets
+        # regrets[regrets < 0] = 0
+        self.cum_regrets += regrets
 
 class NotPlayerError(Exception):
     def __init__(self, message):
