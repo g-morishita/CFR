@@ -11,6 +11,9 @@ class Player():
     player : int
         The player in the game.
 
+    strategy : np.ndarray
+        The mixed strategy that the player has. If it's None, it is set to an uniformly random one.
+
     Attributes
     ----------
     game : normal_game.OneShotGame
@@ -22,20 +25,20 @@ class Player():
         The number of actions the player has.
     cum_regrets : np.ndarray
         The cumulative regret.
+    strategy : np.ndarray
+        The mixed strategy.
     """
 
     # the game the player play
     game = normal_game.OneShotGame()
 
-    def __init__(self, player):
+    def __init__(self, player, strategy=None):
         if self.game is not None:
-            self.initilize_player(player)
+            self.initilize_player(player, strategy)
         else:
-            self.player = player
-            self.num_actions = 0
-            self.cum_regrets = None
+            raise normal_game.NotSetGameError("The game is not set")
 
-    def initilize_player(self, player):
+    def initilize_player(self, player, strategy):
         if player > self.game.num_players:
             raise normal_game.ExceedNumPlayersError(f"Your input player exceeds the number of players in the given game. "
                                                     f"The limit is {self.game.num_players}, but your input is {player}")
@@ -43,6 +46,10 @@ class Player():
         self.player = player
         self.num_actions = self.game.num_strategies[self.player]
         self.cum_regrets = np.zeros(self.num_actions)
+        if strategy is None:
+            self.strategy = 1.0 / self.num_actions
+        else
+            self.strategy = strategy
 
     def init_game(cls, game_matrix):
         """initiate the normal game"""
@@ -71,11 +78,18 @@ class Player():
         other_players = list(other_players)
         all_players = other_players + [self]
         all_players.sort(key=lambda player: player.player)
-        mixed_strategies = [player.regret_to_strategy() for player in all_players]
+        mixed_strategies = [player.strategy for player in all_players]
         resultant_utilities, played_actions = self.game.play_prob(mixed_strategies)
         return resultant_utilities, played_actions
 
-    def regret_to_strategy(self):
+    def update_strategy(self):
+        """
+        Update the mixed strategy that the player has based on the cumulative regret.
+        """
+
+        self.strategy = self._regret_to_strategy()
+
+    def _regret_to_strategy(self):
         """
         Transform the cumulative regret into the mixed strategy.
         If the cumulative regret is non-positive, the mixed strategy is uniformly random.
