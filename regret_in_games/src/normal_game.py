@@ -49,12 +49,6 @@ class OneShotGame:
     """
 
     def __init__(self, game_matrix=None):
-        """
-
-        Parameters
-        ----------
-        game_matrix
-        """
         if game_matrix is not None:
             self.initialize_game(game_matrix)
         else:
@@ -62,12 +56,26 @@ class OneShotGame:
 
 
     def initialize_game(self, game_matrix):
+        """
+        Initialize the game.
+
+        Parameters
+        ----------
+        game_matrix : numpy.ndarray
+            The matrix that represents the normal-form game.
+
+        Returns
+        -------
+        self : returns an instance of self.
+        """
+
         helper_func.check_list_like(game_matrix)
         self.game_matrix = np.array(game_matrix)
 
         # num_strategies is a np.ndarray. Its (i-1)th element is the number of strategies for player i.
         self.num_strategies = np.array(self.game_matrix.shape)[:-1]
         self.num_players = len(self.num_strategies)
+        return self
 
 
     def _check_valid_game(self):
