@@ -55,7 +55,7 @@ class Player():
         Parameters
         ----------
         other_players : np.ndarray
-            The ohter players that participate the game.
+            The other players that participate the game.
 
         Returns
         -------
