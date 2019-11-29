@@ -2,7 +2,7 @@ import regret_matching
 import numpy as np
 MONICA = 0
 GARY = 1
-NUM_ITERATIONS = 1000000
+NUM_ITERATIONS = 100000
 
 def colonel_blotto():
     """
@@ -12,9 +12,35 @@ def colonel_blotto():
     -------
     game : np.ndarray
     The numpy.ndarray that represents the Colonel Blotto game
+
+    Note
+    -------
+    The map of strategies is below.
+    {0: array([5, 0, 0]),
+     1: array([4, 1, 0]),
+     2: array([3, 2, 0]),
+     3: array([2, 3, 0]),
+     4: array([1, 4, 0]),
+     5: array([0, 5, 0]),
+     6: array([4, 0, 1]),
+     7: array([3, 1, 1]),
+     8: array([2, 2, 1]),
+     9: array([1, 3, 1]),
+     10: array([0, 4, 1]),
+     11: array([3, 0, 2]),
+     12: array([2, 1, 2]),
+     13: array([1, 2, 2]),
+     14: array([0, 3, 2]),
+     15: array([2, 0, 3]),
+     16: array([1, 1, 3]),
+     17: array([0, 2, 3]),
+     18: array([1, 0, 4]),
+     19: array([0, 1, 4]),
+     20: array([0, 0, 5])}
     """
 
-    actions = np.array([[3 - i -k, k, i] for i in range(4) for k in range(4 - i)])
+    NUM_SOLDIERS = 5
+    actions = np.array([[NUM_SOLDIERS - i -k, k, i] for i in range(NUM_SOLDIERS + 1) for k in range(NUM_SOLDIERS + 1 - i)])
     num_actions = len(actions)
     map_actions = dict(zip(range(num_actions), actions))
     game = [[[] for _ in range(num_actions)] for _ in range(num_actions)]
@@ -45,12 +71,15 @@ def main():
         [[7, 2], [0, 0]]
     ]
     cb = colonel_blotto()
+    import ipdb; ipdb.set_trace()
 
-    regret_matching.Player.init_game(regret_matching.Player, battle_of_sexes)
+    regret_matching.Player.init_game(regret_matching.Player, cb)
 
     # regret_matching
     monica_mixed_strategy = []
     monica = regret_matching.Player(MONICA)
+    # gary_initial_strategy = np.zeros(21)
+    # gary_initial_strategy[13] = 1
     gary = regret_matching.Player(GARY)
     for _ in range(NUM_ITERATIONS):
         _, played_pure_strategies = monica.simulate_game([gary])
@@ -59,11 +88,11 @@ def main():
         monica_mixed_strategy.append(monica.cum_strategy / monica.num_played)
 
         _, played_pure_strategies = gary.simulate_game([monica])
-        gary.update_cum_regret(played_pure_strategies)
-        gary.update_strategy()
+        # gary.update_cum_regret(played_pure_strategies)
+        # gary.update_strategy()
 
     print(f"Monica's converged strategy is {monica.cum_strategy / monica.num_played}")
-    # print(f"Gary's converged strategy is {gary.cum_strategy / gary.num_played}")
+    print(f"Gary's converged strategy is {gary.cum_strategy / gary.num_played}")
     np.save("rsp_result", np.array(monica_mixed_strategy))
 
 if __name__ == "__main__":
