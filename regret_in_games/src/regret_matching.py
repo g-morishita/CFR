@@ -27,6 +27,8 @@ class Player():
         The cumulative regret.
     strategy : np.ndarray
         The mixed strategy.
+    num_played : int
+        The number of games the player has played before.
     """
 
     # the game the player play
@@ -46,8 +48,10 @@ class Player():
         self.player = player
         self.num_actions = self.game.num_strategies[self.player]
         self.cum_regrets = np.zeros(self.num_actions)
+        self.cum_strategy = np.zeros(self.num_actions)
+        self.num_played = 0
         if strategy is None:
-            self.strategy = 1.0 / self.num_actions
+            self.strategy = np.tile(1.0 / self.num_actions, self.num_actions)
         else:
             self.strategy = strategy
 
@@ -75,11 +79,15 @@ class Player():
         # check if other players are actually players
         if not np.array([isinstance(player, Player) for player in other_players]).all():
             raise NotPlayerError("The inputs are inavlid. The acceptable type is only Player.")
+
         other_players = list(other_players)
         all_players = other_players + [self]
         all_players.sort(key=lambda player: player.player)
-        mixed_strategies = [player.strategy for player in all_players]
+        mixed_strategies = np.array([player.strategy for player in all_players])
         resultant_utilities, played_actions = self.game.play_prob(mixed_strategies)
+
+        self.num_played += 1
+        self.cum_strategy += self.strategy
         return resultant_utilities, played_actions
 
     def update_strategy(self):
@@ -101,12 +109,12 @@ class Player():
         """
 
         # If the cumulative regret is 0, his/her mixed strategy is uniformly random.
-        # Note that the initial mixed strategy does not need to be uniformly random.
-        if (self.cum_regrets.sum() <= 0):
+        mixed_strategy = np.copy(self.cum_regrets)
+        mixed_strategy[mixed_strategy < 0] = 0
+        if (mixed_strategy.sum() <= 0):
             mixed_strategy = np.tile(1.0 / self.num_actions, self.num_actions)
         else:
-            self.cum_regrets[self.cum_regrets < 0] = 0
-            mixed_strategy = self.cum_regrets / self.cum_regrets.sum()
+            mixed_strategy = mixed_strategy / mixed_strategy.sum()
         return mixed_strategy
 
     def _calc_regrets(self, played_actions):
