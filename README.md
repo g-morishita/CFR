@@ -8,7 +8,7 @@ It is not efficient, but easy to read.
 This is a fundamental algorithm to seek for a correlated equilibrium which is a weaker concept of NE in a normal-form game.
 
 ### How to use
-Move to `regret_in_games/src`, then just run `python main.py`. 
+Move to `regret_in_games/src`, then just run `python main.py game_name`, where game_name is one you want to simulate.
 The requirement is python3.7 and some basic packages such as numpy, and pandas.
 
 # Reference 
