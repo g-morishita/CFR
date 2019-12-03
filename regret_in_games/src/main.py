@@ -97,9 +97,7 @@ def main(game_name):
         gary.update_strategy()
 
     print(f"Monica's converged strategy is {monica.cum_strategy / monica.num_played}")
-    print(f"Monica's final strategy is {monica.strategy}")
     print(f"Gary's converged strategy is {gary.cum_strategy / gary.num_played}")
-    print(f"Gary's final strategy is {gary.strategy}")
     np.save("rsp_result", np.array(monica_mixed_strategy))
 
 if __name__ == "__main__":
