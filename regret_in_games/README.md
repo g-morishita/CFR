@@ -4,7 +4,7 @@ In this directory, I implemented the regret-matching algorithm, which seeks for 
 You can simulate games such as rock-paper-scissors, battle of sexes, chicken game, and colonel blotto.
 
 ## How to use?
-In this directory, you run `python main.py game_name`.
+Moving to `src` directory, you run `python main.py game_name`.
 
 Now, games to be implemented are shown in the following table.
 
