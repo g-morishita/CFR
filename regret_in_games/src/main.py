@@ -1,5 +1,6 @@
 import regret_matching
 import numpy as np
+import sys
 MONICA = 0
 GARY = 1
 NUM_ITERATIONS = 100000
@@ -55,25 +56,29 @@ def colonel_blotto():
                 game[row_action][col_action] = [0, 0]
     return np.array(game)
 
-def main():
-    rsp = [
-        [[0, 0], [-1, 1], [1, -1]],
-        [[1, -1], [0, 0], [-1, 1]],
-        [[-1, 1], [1, -1], [0, 0]]
-    ]
-    battle_of_sexes = [
-        [[2, 1], [0, 0]],
-        [[0, 0], [1, 2]]
-    ]
+def main(game_name):
+    if game_name == "rsp":
+        game = [
+            [[0, 0], [-1, 1], [1, -1]],
+            [[1, -1], [0, 0], [-1, 1]],
+            [[-1, 1], [1, -1], [0, 0]]
+        ]
+    elif game_name == "bos":
+        game = [
+            [[2, 1], [0, 0]],
+            [[0, 0], [1, 2]]
+        ]
+    elif game_name == "chi":
+        game = [
+            [[6, 6], [2, 7]],
+            [[7, 2], [0, 0]]
+        ]
+    elif game_name == "cb":
+        game = colonel_blotto()
+    else:
+        print(f"There is no game such as {game_name}")
 
-    chicken = [
-        [[6, 6], [2, 7]],
-        [[7, 2], [0, 0]]
-    ]
-    cb = colonel_blotto()
-    import ipdb; ipdb.set_trace()
-
-    regret_matching.Player.init_game(regret_matching.Player, cb)
+    regret_matching.Player.init_game(regret_matching.Player, game)
 
     # regret_matching
     monica_mixed_strategy = []
@@ -88,12 +93,15 @@ def main():
         monica_mixed_strategy.append(monica.cum_strategy / monica.num_played)
 
         _, played_pure_strategies = gary.simulate_game([monica])
-        # gary.update_cum_regret(played_pure_strategies)
-        # gary.update_strategy()
+        gary.update_cum_regret(played_pure_strategies)
+        gary.update_strategy()
 
     print(f"Monica's converged strategy is {monica.cum_strategy / monica.num_played}")
+    print(f"Monica's final strategy is {monica.strategy}")
     print(f"Gary's converged strategy is {gary.cum_strategy / gary.num_played}")
+    print(f"Gary's final strategy is {gary.strategy}")
     np.save("rsp_result", np.array(monica_mixed_strategy))
 
 if __name__ == "__main__":
-    main()
+    game_name = sys.argv[1]
+    main(game_name)
